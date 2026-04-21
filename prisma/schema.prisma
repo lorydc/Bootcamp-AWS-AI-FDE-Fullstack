@@ -5,3 +5,20 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
+model Director {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  movies Movie[]
+}
+
+model Movie {
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String?
+  releaseYear Int
+  genre       String
+  directorId  Int
+
+  director Director @relation(fields: [directorId], references: [id])
+}
