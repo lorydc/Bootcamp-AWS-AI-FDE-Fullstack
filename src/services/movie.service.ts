@@ -1,7 +1,7 @@
 import prisma from "../database/prisma";
 import { AppError } from "../errors/AppError";
 
-interface CreateMovieDTO {
+export interface CreateMovieDTO {
   title: string;
   description?: string;
   releaseYear: number;
