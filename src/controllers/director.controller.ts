@@ -1,27 +1,23 @@
 import { Request, Response } from "express";
 import { createDirector } from "../services/director.service";
+import { AppError } from "../errors/AppError";
 
 export async function createDirectorController(req: Request, res: Response) {
   try {
-    const name = req.body.name;
-    if (!name) {
-      return res.status(400).json({ error: "Name is required" });
-    }
-
-    if (name.length < 3 || name.length > 50) {
-      return res.status(400).json({
-        error: "Name must be between 3 and 50 characters"
-      });
-    }
-    const director = await createDirector(name);
+    const director = await createDirector(req.body.name);
 
     return res.status(201).json(director);
 
-  } catch (error: any) {
-    if (error.message === "Director already exists") {
-      return res.status(409).json({ error: error.message });
+  } catch (error: unknown) {
+
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        error: error.message
+      });
     }
 
-   return res.status(500).json({ error: String(error) });
+    return res.status(500).json({
+      error: "Internal server error"
+    });
   }
 }

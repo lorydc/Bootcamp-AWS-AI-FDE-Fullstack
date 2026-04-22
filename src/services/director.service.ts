@@ -1,18 +1,25 @@
 import prisma from "../database/prisma";
+import { AppError } from "../errors/AppError";
 
 export async function createDirector(name: string) {
-  const exists = await prisma.director.findUnique({
+
+  if (!name) {
+    throw new AppError("Name is required", 400);
+  }
+
+  if (name.length < 3 || name.length > 50) {
+    throw new AppError("Name must be between 3 and 50 characters", 400);
+  }
+
+  const existingDirector = await prisma.director.findUnique({
     where: { name }
   });
 
-  if (exists) {
-    throw new Error("Director already exists");
+  if (existingDirector) {
+    throw new AppError("Director already exists", 409);
   }
-  const director = await prisma.director.create({
-    data: {
-      name: name
-    }
-  });
 
-  return director;
+  return prisma.director.create({
+    data: { name }
+  });
 }
