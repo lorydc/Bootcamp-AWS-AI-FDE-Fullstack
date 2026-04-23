@@ -13,15 +13,14 @@ jest.mock("../database/prisma", () => ({
 describe("Create Movie", () => {
 
   it("should throw error if required fields are missing", async () => {
-
-    const invalidData = {
+    const data: CreateMovieDTO = {
       title: "",
       genre: "",
       releaseYear: 0,
       directorId: 0
-    } as CreateMovieDTO;
+    };
 
-    await expect(createMovie(invalidData))
+    await expect(createMovie(data))
       .rejects.toThrow("Missing required fields");
   });
 
@@ -39,10 +38,21 @@ describe("Create Movie", () => {
       .rejects.toThrow("Invalid release year");
   });
 
+  it("should throw error if description is too long", async () => {
+    const data: CreateMovieDTO = {
+      title: "Test",
+      genre: "Action",
+      releaseYear: 2020,
+      directorId: 1,
+      description: "a".repeat(256)
+    };
+
+    await expect(createMovie(data))
+      .rejects.toThrow("Description must be at most 255 characters");
+  });
+
   it("should throw error if director does not exist", async () => {
-
     (prisma.director.findUnique as jest.Mock).mockResolvedValue(null);
-
     const data: CreateMovieDTO = {
       title: "Test",
       genre: "Action",
@@ -55,7 +65,6 @@ describe("Create Movie", () => {
   });
 
   it("should create movie successfully", async () => {
-
     (prisma.director.findUnique as jest.Mock).mockResolvedValue({
       id: 1,
       name: "Director"
@@ -63,7 +72,10 @@ describe("Create Movie", () => {
 
     (prisma.movie.create as jest.Mock).mockResolvedValue({
       id: 1,
-      title: "Test"
+      title: "Test",
+      genre: "Action",
+      releaseYear: 2020,
+      directorId: 1
     });
 
     const data: CreateMovieDTO = {

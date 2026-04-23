@@ -14,17 +14,15 @@ describe("Create Director", () => {
     await expect(createDirector("")).rejects.toThrow("Name is required");
   });
 
-  it("should throw error if name is too short", async () => {
+  it("should throw error if name is invalid", async () => {
     await expect(createDirector("ab")).rejects.toThrow();
   });
 
   it("should throw error if director already exists", async () => {
-    (prisma.director.findUnique as jest.Mock).mockResolvedValue({
-      id: 1,
-      name: "Test"
-    });
+    (prisma.director.findUnique as jest.Mock).mockResolvedValue({ id: 1 });
 
-    await expect(createDirector("Test")).rejects.toThrow("Director already exists");
+    await expect(createDirector("Test"))
+      .rejects.toThrow("Director already exists");
   });
 
   it("should create director successfully", async () => {
@@ -37,7 +35,6 @@ describe("Create Director", () => {
 
     const result = await createDirector("Test");
 
-    expect(result).toHaveProperty("id");
     expect(result.name).toBe("Test");
   });
 

@@ -1,7 +1,15 @@
-export function validateDirector(req, res, next) {
-  if (!req.body.name) {
+import { Request, Response, NextFunction } from "express";
+
+export function validateDirector(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { name } = req.body;
+
+  if (!name) {
     return res.status(400).json({ error: "Name is required" });
   }
 
-  return next();
+  next();
 }

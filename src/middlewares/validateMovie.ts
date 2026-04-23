@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 
-export function validateMovie(req: Request, res: Response, next: NextFunction) {
-  const { title, releaseYear, genre, directorId, description } = req.body;
-
-  const currentYear = new Date().getFullYear();
+export function validateMovie(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const { title, releaseYear, genre, directorId } = req.body;
 
   if (!title || !genre || !releaseYear || !directorId) {
     return res.status(400).json({
@@ -11,17 +13,17 @@ export function validateMovie(req: Request, res: Response, next: NextFunction) {
     });
   }
 
-  if (typeof releaseYear !== "number" || releaseYear > currentYear) {
+  if (typeof releaseYear !== "number") {
     return res.status(400).json({
-      error: "releaseYear must be a valid year"
+      error: "releaseYear must be a number"
     });
   }
 
-  if (description && description.length > 255) {
+  if (typeof directorId !== "number") {
     return res.status(400).json({
-      error: "description must be at most 255 characters"
+      error: "directorId must be a number"
     });
   }
 
-  return next();
+  next();
 }
