@@ -7,7 +7,12 @@ export function validateMovie(
 ) {
   const { title, releaseYear, genre, directorId } = req.body;
 
-  if (!title || !genre || !releaseYear || !directorId) {
+  if (
+    title === undefined ||
+    genre === undefined ||
+    releaseYear === undefined ||
+    directorId === undefined
+  ) {
     return res.status(400).json({
       error: "title, genre, releaseYear and directorId are required"
     });

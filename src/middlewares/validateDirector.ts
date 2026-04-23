@@ -7,8 +7,16 @@ export function validateDirector(
 ) {
   const { name } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ error: "Name is required" });
+  if (name === undefined) {
+    return res.status(400).json({
+      error: "Name is required"
+    });
+  }
+
+  if (typeof name !== "string") {
+    return res.status(400).json({
+      error: "Name must be a string"
+    });
   }
 
   next();
