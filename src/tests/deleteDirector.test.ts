@@ -13,12 +13,11 @@ describe("Delete Director", () => {
   it("should throw error if director has movies", async () => {
     (prisma.director.findUnique as jest.Mock).mockResolvedValue({
       id: 1,
-      movies: [{}]
+      movies: [{ id: 1 }]
     });
 
-    expect(prisma.director.delete).toHaveBeenCalledWith({
-  where: { id: 1 }
-});
+    await expect(deleteDirector(1))
+      .rejects.toThrow("Director has associated movies");
   });
 
   it("should delete successfully", async () => {
@@ -27,7 +26,12 @@ describe("Delete Director", () => {
       movies: []
     });
 
+    (prisma.director.delete as jest.Mock).mockResolvedValue({});
+
     await expect(deleteDirector(1)).resolves.not.toThrow();
+    expect(prisma.director.delete).toHaveBeenCalledWith({
+      where: { id: 1 }
+    });
   });
 
 });
