@@ -82,16 +82,16 @@ export async function createMovieController(
   req: Request<{}, {}, CreateMovieDTO>,
   res: Response
 ) {
+  console.info("[CREATE MOVIE] Body received:", req.body);
   try {
     const movie = await createMovie(req.body);
-
+    console.info("[CREATE MOVIE] Success:", movie);
     return res.status(201).json(movie);
-
   } catch (error: unknown) {
+    console.error("[CREATE MOVIE] Error:", error);
     if (error instanceof AppError) {
       return res.status(error.statusCode).json({ error: error.message });
     }
-
     return res.status(500).json({ error: "Internal server error" });
   }
 }
