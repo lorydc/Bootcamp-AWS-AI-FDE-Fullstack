@@ -1,11 +1,14 @@
 services:
   app:
     build: .
+    container_name: movies_api
+    restart: always
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: "file:./dev.db"
+      PORT: 3000
     volumes:
-      - sqlite-data:/app/prisma
-    restart: unless-stopped
-
-volumes:
-  sqlite-data:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev

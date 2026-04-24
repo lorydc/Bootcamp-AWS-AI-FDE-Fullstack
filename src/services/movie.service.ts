@@ -1,29 +1,19 @@
 import prisma from "../database/prisma";
 import { AppError } from "../errors/AppError";
-import { Prisma } from "@prisma/client";
-
-export interface CreateMovieDTO {
-  title: string;
-  description?: string;
-  releaseYear: number;
-  genre: string;
-  directorId: number;
-}
-
-export interface MovieFilters {
-  title?: string;
-  genre?: string;
-  releaseYear?: number;
-}
+import { CreateMovieDTO, MovieFilters } from "../models/movie.model";
 
 export async function getAllMovies(filters: MovieFilters) {
   console.info("[SERVICE - GET ALL MOVIES] Input:", filters);
 
   try {
-    const where: Prisma.MovieWhereInput = {};
+    const where: {
+      title?: { contains: string };
+      genre?: string;
+      releaseYear?: number;
+    } = {};
     if (filters.title) {
       where.title = {
-        contains: filters.title.toLowerCase()
+        contains: filters.title
       };
     }
     if (filters.genre) {
@@ -32,6 +22,7 @@ export async function getAllMovies(filters: MovieFilters) {
     if (filters.releaseYear) {
       where.releaseYear = filters.releaseYear;
     }
+
     const movies = await prisma.movie.findMany({
       where,
       include: { director: true }
