@@ -143,3 +143,26 @@ export async function updateDirector(id: number, name: string) {
     throw error;
   }
 }
+
+export async function getDirectorById(id: number) {
+  console.info("[SERVICE - GET DIRECTOR BY ID] Input:", { id });
+
+  try {
+    const director = await prisma.director.findUnique({
+      where: { id }
+    });
+
+    if (!director) {
+      console.warn("[SERVICE - GET DIRECTOR BY ID] Director not found:", id);
+      throw new AppError("Director not found", 404);
+    }
+
+    console.info("[SERVICE - GET DIRECTOR BY ID] Success:", director);
+
+    return director;
+
+  } catch (error) {
+    console.error("[SERVICE - GET DIRECTOR BY ID] Error:", error);
+    throw error;
+  }
+}
