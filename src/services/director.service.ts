@@ -12,90 +12,134 @@ function validateName(name: string) {
 }
 
 export async function createDirector(name: string) {
-  validateName(name);
+  console.info("[SERVICE - CREATE DIRECTOR] Input:", { name });
 
-  const existingDirector = await prisma.director.findUnique({
-    where: { name }
-  });
+  try {
+    validateName(name);
+    const existingDirector = await prisma.director.findUnique({
+      where: { name }
+    });
+    console.info("[SERVICE - CREATE DIRECTOR] Checking existing director");
 
-  if (existingDirector) {
-    throw new AppError("Director already exists", 409);
+    if (existingDirector) {
+      console.warn("[SERVICE - CREATE DIRECTOR] Director already exists");
+      throw new AppError("Director already exists", 409);
+    }
+    const director = await prisma.director.create({
+      data: { name }
+    });
+
+    console.info("[SERVICE - CREATE DIRECTOR] Success:", director);
+    return director;
+
+  } catch (error) {
+    console.error("[SERVICE - CREATE DIRECTOR] Error:", error);
+    throw error;
   }
-
-  return prisma.director.create({
-    data: { name }
-  });
 }
 
 export async function getAllDirectors() {
-  return prisma.director.findMany();
-}
+  console.info("[SERVICE - GET ALL DIRECTORS] Input: none");
 
-export async function getDirectorById(id: number) {
-  const director = await prisma.director.findUnique({
-    where: { id }
-  });
+  try {
+    const directors = await prisma.director.findMany();
 
-  if (!director) {
-    throw new AppError("Director not found", 404);
+    console.info("[SERVICE - GET ALL DIRECTORS] Success:", {
+      count: directors.length
+    });
+
+    return directors;
+
+  } catch (error) {
+    console.error("[SERVICE - GET ALL DIRECTORS] Error:", error);
+    throw error;
   }
-
-  return director;
 }
 
 export async function deleteDirector(id: number) {
-  const director = await prisma.director.findUnique({
-    where: { id },
-    include: { movies: true }
-  });
+  console.info("[SERVICE - DELETE DIRECTOR] Input:", { id });
 
-  if (!director) {
-    throw new AppError("Director not found", 404);
+  try {
+    const director = await prisma.director.findUnique({
+      where: { id },
+      include: { movies: true }
+    });
+
+    if (!director) {
+      console.warn("[SERVICE - DELETE DIRECTOR] Director not found:", id);
+      throw new AppError("Director not found", 404);
+    }
+
+    if (director.movies.length > 0) {
+      console.warn("[SERVICE - DELETE DIRECTOR] Director has associated movies:", id);
+      throw new AppError("Director has associated movies", 409);
+    }
+
+    await prisma.director.delete({
+      where: { id }
+    });
+
+    console.info("[SERVICE - DELETE DIRECTOR] Success: director deleted", { id });
+
+  } catch (error) {
+    console.error("[SERVICE - DELETE DIRECTOR] Error:", error);
+    throw error;
   }
-
-  if (director.movies.length > 0) {
-    throw new AppError("Director has associated movies", 409);
-  }
-
-  await prisma.director.delete({
-    where: { id }
-  });
 }
 
 export async function getMoviesByDirector(id: number) {
-  const director = await prisma.director.findUnique({
-    where: { id },
-    include: { movies: true }
-  });
+  console.info("[SERVICE - GET MOVIES BY DIRECTOR] Input:", { id });
 
-  if (!director) {
-    throw new AppError("Director not found", 404);
+  try {
+    const director = await prisma.director.findUnique({
+      where: { id },
+      include: { movies: true }
+    });
+
+    if (!director) {
+      console.warn("[SERVICE - GET MOVIES BY DIRECTOR] Director not found:", id);
+      throw new AppError("Director not found", 404);
+    }
+
+    console.info("[SERVICE - GET MOVIES BY DIRECTOR] Success:", {
+      directorId: id,
+      moviesCount: director.movies.length
+    });
+
+    return director.movies;
+
+  } catch (error) {
+    console.error("[SERVICE - GET MOVIES BY DIRECTOR] Error:", error);
+    throw error;
   }
-
-  return director.movies;
 }
 
 export async function updateDirector(id: number, name: string) {
-  validateName(name);
+  console.info("[SERVICE - UPDATE DIRECTOR] Input:", { id, name });
 
-  const director = await prisma.director.findUnique({
-    where: { id }
-  });
+  try {
+    validateName(name);
 
-  if (!director) {
-    throw new AppError("Director not found", 404);
+    const director = await prisma.director.findUnique({
+      where: { id }
+    });
+
+    if (!director) {
+      console.warn("[SERVICE - UPDATE DIRECTOR] Director not found:", id);
+      throw new AppError("Director not found", 404);
+    }
+
+    const updated = await prisma.director.update({
+      where: { id },
+      data: { name }
+    });
+
+    console.info("[SERVICE - UPDATE DIRECTOR] Success:", updated);
+
+    return updated;
+
+  } catch (error) {
+    console.error("[SERVICE - UPDATE DIRECTOR] Error:", error);
+    throw error;
   }
-
-  const existingDirector = await prisma.director.findUnique({
-    where: { name }
-  });
-
-  if (existingDirector && existingDirector.id !== id) {
-    throw new AppError("Director already exists", 409);
-  }
-
-  return prisma.director.update({
-    where: { id },
-    data: { name }
-  });
 }
