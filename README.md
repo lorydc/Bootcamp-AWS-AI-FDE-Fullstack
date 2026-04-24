@@ -1,4 +1,3 @@
-
 ```markdown
 # 📽️ Movies API
 
@@ -32,7 +31,7 @@ Data access is handled with **Prisma ORM**.
 	- [Running Locally (SQLite)](#running-locally-sqlite)
 	- [Running with Docker (SQLite)](#running-with-docker-sqlite)
 - [Conventional Commits](#conventional-commits)
-- [💡 Personal Experience](#-personal-experience)
+- [Personal Experience](#personal-experience)
 - [Notes](#notes)
 
 ---
@@ -355,7 +354,7 @@ Examples:
 Reference:
 - https://www.conventionalcommits.org/en/v1.0.0/
 
-## 💡 Personal Experience
+## Personal Experience
 This project was very important in my learning journey, as it helped me understand how to structure a backend application using a real-world architecture pattern, with clear separation between controllers, services, and the database layer.
 
 During development, I learned how to:
