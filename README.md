@@ -1,3 +1,4 @@
+
 ```markdown
 # 📽️ Movies API
 
@@ -92,6 +93,10 @@ This project is a backend API that manages movies and directors with a one-to-ma
 │  │  └── validateMovie.ts
 
 │  ├── models/
+
+│  │  ├── director.model.ts
+
+│  │  └── movie.model.ts
 
 │  ├── routes/
 
@@ -199,7 +204,7 @@ Swagger UI:
 | PUT | `/movies/:id` | Update a movie |
 | DELETE | `/movies/:id` | Delete a movie |
 
-**GET /movies filters**
+**GET /movies filters**  
 Example:
 ```
 

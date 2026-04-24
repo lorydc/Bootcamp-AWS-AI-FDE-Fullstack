@@ -1,4 +1,5 @@
-import { createMovie, CreateMovieDTO } from "../services/movie.service";
+import { createMovie } from "../services/movie.service";
+import { CreateMovieDTO } from "../models/movie.model";
 import prisma from "../database/prisma";
 
 jest.mock("../database/prisma", () => ({
