@@ -7,22 +7,31 @@ export function validateMovie(
 ) {
   const { title, releaseYear, genre, directorId } = req.body;
 
-  if (
-    title === undefined ||
-    genre === undefined ||
-    releaseYear === undefined ||
-    directorId === undefined
-  ) {
-    return res.status(400).json({
-      error: "title, genre, releaseYear and directorId are required"
-    });
-  }
+  if (!title || title.trim() === "") {
+  return res.status(400).json({
+    error: "title is required"
+  });
+}
 
   if (typeof releaseYear !== "number") {
     return res.status(400).json({
       error: "releaseYear must be a number"
     });
   }
+
+  const currentYear = new Date().getFullYear();
+
+if (releaseYear > currentYear) {
+  return res.status(400).json({
+    error: "releaseYear cannot be greater than current year"
+  });
+}
+
+if (typeof genre !== "string" || genre.trim() === "") {
+  return res.status(400).json({
+    error: "genre is required and must be a string"
+  });
+}
 
   if (typeof directorId !== "number") {
     return res.status(400).json({

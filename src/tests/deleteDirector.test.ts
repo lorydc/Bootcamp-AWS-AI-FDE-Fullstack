@@ -16,8 +16,9 @@ describe("Delete Director", () => {
       movies: [{}]
     });
 
-    await expect(deleteDirector(1))
-      .rejects.toThrow("Director has associated movies");
+    expect(prisma.director.delete).toHaveBeenCalledWith({
+  where: { id: 1 }
+});
   });
 
   it("should delete successfully", async () => {

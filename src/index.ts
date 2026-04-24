@@ -9,8 +9,14 @@ app.use(express.json());
 app.use(movieRoutes);
 app.use(directorRoutes);
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+app.get("/", (req, res) => {
+  res.send("API running");
+});
 
-  
+const server = app.listen(3000, () => {
+  console.log("Server running on port 3000");
+});
+
+server.on("error", (err) => {
+  console.log("Server error:", err);
 });

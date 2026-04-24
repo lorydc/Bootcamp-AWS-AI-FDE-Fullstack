@@ -21,9 +21,9 @@ export async function getAllMovies(filters: MovieFilters) {
 
   if (filters.title) {
     where.title = {
-      contains: filters.title.toLowerCase()
-    };
-  }
+  contains: filters.title.toLowerCase()
+  };
+}
 
   if (filters.genre) {
     where.genre = filters.genre;
@@ -61,7 +61,7 @@ export async function deleteMovie(id: number) {
     throw new AppError("Movie not found", 404);
   }
 
-  await prisma.movie.delete({
+  return prisma.movie.delete({
     where: { id }
   });
 }

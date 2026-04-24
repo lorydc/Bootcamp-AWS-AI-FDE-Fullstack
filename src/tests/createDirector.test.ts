@@ -15,7 +15,8 @@ describe("Create Director", () => {
   });
 
   it("should throw error if name is invalid", async () => {
-    await expect(createDirector("ab")).rejects.toThrow();
+    await expect(createDirector("ab"))
+  .rejects.toThrow("Name must be between 3 and 50 characters");
   });
 
   it("should throw error if director already exists", async () => {
