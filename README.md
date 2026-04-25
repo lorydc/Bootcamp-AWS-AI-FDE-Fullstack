@@ -1,11 +1,9 @@
 ```markdown
 # 📽️ Movies API
 
-REST API for managing **movies** and **directors**, built with **Node.js**, **Express**, and **TypeScript**.  
-Data access is handled with **Prisma ORM**.
-
-- **Local development:** SQLite (`prisma/dev.db`)
-- **Docker:** SQLite (`dev.db` created in the project root via volume mount)
+> REST API for managing **movies** and **directors**, built with **Node.js**, **Express**, and **TypeScript**.  
+> Data access is handled with **Prisma ORM** and **SQLite**.  
+> The project includes **Swagger UI documentation**, **validation middlewares**, **structured error handling**, **logging**, and **unit tests**.
 
 ---
 
@@ -34,31 +32,12 @@ Data access is handled with **Prisma ORM**.
 - [Personal Experience](#personal-experience)
 - [Notes](#notes)
 
----
+## 📁 Project Structure
+>>>>>>> 135700c (docs: update README and final adjustments)
 
-## About
-This project is a backend API that manages movies and directors with a one-to-many relationship:
+The implementation follows a modular architecture to keep the code organized and maintainable.  
+It is split into layers such as **controllers**, **services**, **middlewares**, **routes**, **models**, and **database**.
 
-- One director can have multiple movies
-- Each movie belongs to one director
-
-## Features
-- CRUD for Movies and Directors
-- Filter movies via query params (`title`, `genre`, `releaseYear`)
-- Input validation via middleware
-- Consistent error responses
-- Request + error logging in controllers/services
-- Unit tests with Jest
-
-## Tech Stack
-- Node.js
-- Express.js
-- TypeScript
-- Prisma ORM
-- SQLite
-- Jest + Supertest
-
-## Project Structure
 ```
 
 .
@@ -145,15 +124,27 @@ This project is a backend API that manages movies and directors with a one-to-ma
 
 ```
 
-## Requirements
-- Node.js 18+
-- npm
-- Prisma CLI (installed as dependency)
-- Docker + Docker Compose (optional)
+---
 
-## Getting Started
+## 💻 Prerequisites
 
-### Environment Variables
+- **Node.js 18+**
+- **npm**
+- **Docker + Docker Compose** (optional, if you want to run via Docker)
+
+---
+
+## 🚀 Installing & Running
+
+### 1) Install dependencies
+```
+
+npm install
+
+```
+
+### 2) Environment variables
+
 Create a `.env` file in the project root.
 
 **Local (SQLite)**
@@ -174,10 +165,15 @@ DATABASE_URL="file:./dev.db"
 
 ```
 
-## Database
-This project uses SQLite with Prisma ORM.
+> Note: In Docker, the SQLite file is created inside the container and persisted to your machine due to the volume mount (you’ll see `dev.db` in the project root).
 
-### Prisma Commands
+---
+
+## 🗄️ Database (Prisma + SQLite)
+
+This project uses **SQLite** with **Prisma ORM**.
+
+### Prisma commands
 ```
 
 npx prisma generate
@@ -188,22 +184,44 @@ npx prisma studio
 
 ```
 
-## API Documentation (Swagger)
+---
+
+## 🔥 API Documentation (Swagger)
+
 Swagger UI:
 - http://localhost:3000/docs
 
-## Endpoints
+> Swagger is used to document and test the API endpoints interactively.
 
-### Movies
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/movies` | Create a new movie |
-| GET | `/movies` | List all movies (filters: `title`, `genre`, `releaseYear`) |
-| GET | `/movies/:id` | Get a movie by id |
-| PUT | `/movies/:id` | Update a movie |
-| DELETE | `/movies/:id` | Delete a movie |
+---
 
-**GET /movies filters**  
+## 📖 API Documentation
+
+The API provides endpoints for **Movies** and **Directors**, including CRUD operations and relationship rules (Director → Movies: One-to-Many).
+
+---
+
+## 🎬 Movies
+
+### Create Movie
+```
+
+POST /movies
+
+```
+
+**Filters available on list endpoint:**
+- `title`
+- `genre`
+- `releaseYear`
+
+### List Movies (with filters)
+```
+
+GET /movies
+
+```
+
 Example:
 ```
 
@@ -211,17 +229,76 @@ Example:
 
 ```
 
-### Directors
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/directors` | Create a new director |
-| GET | `/directors` | List all directors |
-| GET | `/directors/:id` | Get a director by id |
-| PUT | `/directors/:id` | Update a director’s name |
-| DELETE | `/directors/:id` | Delete a director (blocked if they have movies) |
-| GET | `/directors/:id/movies` | List movies by director |
+### Get Movie by ID
+```
 
-## Validations & Business Rules
+GET /movies/:id
+
+```
+
+### Update Movie
+```
+
+PUT /movies/:id
+
+```
+
+### Delete Movie
+```
+
+DELETE /movies/:id
+
+```
+
+---
+
+## 🎬 Directors
+
+### Create Director
+```
+
+POST /directors
+
+```
+
+### List Directors
+```
+
+GET /directors
+
+```
+
+### Get Director by ID
+```
+
+GET /directors/:id
+
+```
+
+### Update Director
+```
+
+PUT /directors/:id
+
+```
+
+### Delete Director (blocked if director has movies)
+```
+
+DELETE /directors/:id
+
+```
+
+### List Movies by Director
+```
+
+GET /directors/:id/movies
+
+```
+
+---
+
+## ✅ Validations & Business Rules
 
 ### Movies
 - `title` is required
@@ -237,7 +314,12 @@ Example:
 - `name` must be unique
 - It is not allowed to delete a director that has linked movies
 
-## Error Handling
+> Tip: Business rules should stay in the **service layer**, keeping controllers focused on request/response only.
+
+---
+
+## ❌ Error Handling
+
 Standard error format:
 ```
 
@@ -246,12 +328,15 @@ Standard error format:
 ```
 
 Expected status codes:
-- 400 → Bad Request
-- 404 → Not Found
-- 409 → Conflict
-- 500 → Internal Server Error
+- **400** → Bad Request (invalid data)
+- **404** → Not Found (resource not found)
+- **409** → Conflict (business rule violation)
+- **500** → Internal Server Error (unexpected error)
 
-## Logging
+---
+
+## 🪵 Logging
+
 Logging rules:
 - Log request entry (method, URL, params, body)
 - Log errors in controllers/services/middlewares
@@ -268,40 +353,33 @@ Example:
 
 ```
 
-## Tests
-Run tests:
+---
+
+## 🧪 Tests
+
+Run all tests:
 ```
 
 npm test
 
 ```
 
+Existing test files cover the main flows for:
+- Create / Update / Delete Director
+- Create / Update / Delete Movie
+- Get movie by ID
+- Get all movies
+- Key business rules
+
 Scripts (from `package.json`):
 - `npm run dev` → `ts-node src/index.ts`
 - `npm run build` → `tsc`
 - `npm start` → `node dist/index.js`
 
-> Note: tests should not be included in the Docker production build (use `npm run build` and run the compiled `dist/` code).
+---
 
-## Running the Project
+## 🐳 Running with Docker (SQLite)
 
-### Running Locally (SQLite)
-```
-
-npm install
-
-npx prisma migrate dev
-
-npm run dev
-
-```
-
-App:
-- http://localhost:3000  
-Swagger:
-- http://localhost:3000/docs
-
-### Running with Docker (SQLite)
 ```
 
 docker-compose up --build
@@ -345,7 +423,10 @@ command: npm run dev
 
 ```
 
-## Conventional Commits
+---
+
+## 🧾 Conventional Commits
+
 Examples:
 - `feat: add movies endpoints`
 - `fix: validate releaseYear properly`
@@ -355,6 +436,10 @@ Reference:
 - https://www.conventionalcommits.org/en/v1.0.0/
 
 ## Personal Experience
+---
+
+## 💡 Personal Experience
+>>>>>>> 135700c (docs: update README and final adjustments)
 This project was very important in my learning journey, as it helped me understand how to structure a backend application using a real-world architecture pattern, with clear separation between controllers, services, and the database layer.
 
 During development, I learned how to:
@@ -369,6 +454,8 @@ During development, I learned how to:
 One of the biggest challenges was understanding how to properly separate responsibilities between layers, especially moving validation and business logic into the service layer. After practicing this approach, the project became much cleaner and easier to maintain.
 
 This project had its ups and downs, but it helped me gain confidence in backend development and prepared me for real-world engineering tasks. When working with newly learned technologies for the first time, challenges appear quickly, but I’m grateful for the opportunity because, despite the difficulties, I was able to deliver a complete project.
+
+---
 
 ## Notes
 - Prisma handles database migrations.
